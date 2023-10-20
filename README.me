@@ -1,0 +1,24 @@
+
+# Varun's notes:
+
+the repo does 2 main tasks -  hand gesture recognition and the point history tracking to trace the pointer and stuff. 
+
+    using media pipe
+
+    -> it recognises the palm and assigns the points to it.
+
+     the way it works basically is that it first runs the palm detection model on the video then if it detects one on screen it runs that image into another model to classify the gesture and stuff - this reflects on the fps: if theres no palm fps is around 17 on cpu and then if theres a palm on screen it drops to around 13 fps. the frame rate drops even further with further increase in number of hands on screen.
+
+    can print the landmark_list to get the set of co-ordinates for each of the points in the hand, the order is the same as per documentation so point 0 is for wrist etc.
+
+normalization of the x and y co-ordinates of the points on the palm before feeding it into the next neural network
+i.e also converting them to relative co-ordinates. (line 239)
+this is done by taking the base point (pt 0 so the wrist point) and subtracting them from all the other points
+so first convert to relative and then normalization is done
+normalization -> taking absolute maximum element and dividing everthing by it
+so these final x and y values will be between 1 and -1 and are basically determined by how far away they are from the base point
+
+basically according to the model, click k while runnning and then the number to save image to that index and then retrain the model by-
+- running the keypoint_classification.ipynb file (change the number of classes in this file), the classes are saved in -
+-keypoint_classifier_label.csv, the data is saved in keypoint.csv - the first column shows the label.
+if you want to start from scratch just delete all the data and collect new data with the new label names
